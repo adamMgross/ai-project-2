@@ -5,6 +5,7 @@
 
 from agent import Agent
 
+import copy
 from collections import deque
 from sets import Set
 
@@ -59,7 +60,7 @@ class MyAgent(Agent):
         for i in range(numNodes):
             assignments.append(0)
 
-        best = {'assignments': tuple(assignments), 'count': 0}
+        best = []
         bestVal = 0
 
         max_degree = network.maxDegree()
@@ -67,34 +68,30 @@ class MyAgent(Agent):
         # [ NOTE: fill in where necessary ]
 
         frontier.pushfront(best)
-        count = 0
         while not frontier.empty():
-            #count += 1
            
            # take the front element from the frontier
             assignment = frontier.pop()
            
             # manage frontier and branch-and-bound search
             # prune nodes (and subtrees) as needed
-            options = self.expand(assignment)
+            options = self.expand(assignment, numNodes)
             for option in options:
-                cover = self.eval(nodeNeighbors, option['assignments'])
+                cover = self.eval(nodeNeighbors, option)
                 if cover > bestVal:
                     bestVal = cover
-                    best = option['assignments']
-                upper_bound = cover + (max_degree * (3 - option['count']))
+                    best = option
+                upper_bound = cover + (max_degree * (3 - len(option)))
                 if upper_bound > bestVal:
                     frontier.pushfront(option)
 
         ### end your code ###
-
-        for i in range(numNodes):
-            if (best[i] == 1):
-                selected.append(i)
+        
+        selected = best
 
         return selected
 
-    def expand(self, assignment):
+    def expand(self, assignment, numNodes):
         """
         expand a node in the tree
 
@@ -103,13 +100,11 @@ class MyAgent(Agent):
 
         nodes = []
         ### your code goes here  ####
-        assignment_scheme = assignment['assignments']
-        for i in range(len(assignment_scheme)):
-            if assignment_scheme[i] == 0:
-                i_child = list(assignment_scheme)
-                i_child[i] = 1
-                nodes.append({'assignments': tuple(i_child), 
-                              'count': assignment['count'] + 1})
+        for i in range(numNodes):
+            if i not in assignment:
+                new_assignment = assignment[:]
+                new_assignment.append(i)
+                nodes.append(new_assignment)
         ### end your code  ###
 
         return nodes
@@ -122,10 +117,9 @@ class MyAgent(Agent):
         """
 
         nbrs = Set()
-        for i in range(len(x)):
-            if x[i] == 1:
-                for j in nodeNeighbors[i]:
-                    nbrs.add(j)
+        for i in x:
+            for j in nodeNeighbors[i]:
+                nbrs.add(j)
 
         return len(nbrs)
 
