@@ -59,7 +59,7 @@ class MyAgent(Agent):
         for i in range(numNodes):
             assignments.append(0)
 
-        best = tuple(assignments)
+        best = {'assignments': tuple(assignments), 'count': 0}
         bestVal = 0
 
         max_degree = network.maxDegree()
@@ -78,11 +78,11 @@ class MyAgent(Agent):
             # prune nodes (and subtrees) as needed
             options = self.expand(assignment)
             for option in options:
-                cover = self.eval(nodeNeighbors, option)
+                cover = self.eval(nodeNeighbors, option['assignments'])
                 if cover > bestVal:
                     bestVal = cover
-                    best = option
-                upper_bound = cover + (max_degree * (3 - self.num_assignments(option)))
+                    best = option['assignments']
+                upper_bound = cover + (max_degree * (3 - option['count']))
                 if upper_bound > bestVal:
                     frontier.pushfront(option)
 
@@ -94,13 +94,6 @@ class MyAgent(Agent):
 
         return selected
 
-    def num_assignments(self, assignment):
-        count = 0
-        for i in range(len(assignment)):
-            if assignment[i] == 1:
-                count += 1
-        return count
-
     def expand(self, assignment):
         """
         expand a node in the tree
@@ -110,11 +103,13 @@ class MyAgent(Agent):
 
         nodes = []
         ### your code goes here  ####
-        for i in range(len(assignment)):
-            if assignment[i] == 0:
-                i_child = list(assignment)
+        assignment_scheme = assignment['assignments']
+        for i in range(len(assignment_scheme)):
+            if assignment_scheme[i] == 0:
+                i_child = list(assignment_scheme)
                 i_child[i] = 1
-                nodes.append(tuple(i_child))
+                nodes.append({'assignments': tuple(i_child), 
+                              'count': assignment['count'] + 1})
         ### end your code  ###
 
         return nodes
