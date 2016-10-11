@@ -6,7 +6,6 @@
 from agent import Agent
 
 from collections import deque
-import copy
 from sets import Set
 
 class Frontier:
@@ -86,14 +85,7 @@ class MyAgent(Agent):
                 upper_bound = cover + (max_degree * (3 - self.num_assignments(option)))
                 if upper_bound > bestVal:
                     frontier.pushfront(option)
-            ''' 
-            if count == 2:
-                print '---------------------'
-                print 'num options ' + str(len(frontier.nodes))
-                print 'max ' + str(max_degree)
-                print 'bestval {}, k={}'.format(bestVal, self.num_assignments(best))
-                print '---------------------'
-            '''
+
         ### end your code ###
 
         for i in range(numNodes):
@@ -117,11 +109,10 @@ class MyAgent(Agent):
         """
 
         nodes = []
-
         ### your code goes here  ####
         for i in range(len(assignment)):
             if assignment[i] == 0:
-                i_child = list(copy.deepcopy(assignment))
+                i_child = list(assignment)
                 i_child[i] = 1
                 nodes.append(tuple(i_child))
         ### end your code  ###
