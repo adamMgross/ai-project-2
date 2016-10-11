@@ -52,14 +52,11 @@ class MyAgent(Agent):
             nbrs = Set(network.getNeighbors(i))
             nbrs.add(i)
             nodeNeighbors.append(nbrs)
+        
         # initialize the "Frontier"
         frontier = Frontier()
 
         # initialize selected nodes
-        assignments = []
-        for i in range(numNodes):
-            assignments.append(0)
-
         best = []
         bestVal = 0
 
@@ -87,9 +84,7 @@ class MyAgent(Agent):
 
         ### end your code ###
         
-        selected = best
-
-        return selected
+        return best
 
     def expand(self, assignment, numNodes):
         """
@@ -98,9 +93,12 @@ class MyAgent(Agent):
         returns children of this node in the search tree
         """
 
-        nodes = []
+        #nodes = [sum(i, assignment) for i in range(numNodes) if i not in assignment]
+        
+        nodes = [] 
         ### your code goes here  ####
-        for i in range(numNodes):
+        begin = 0 if len(assignment) == 0 else max(assignment)
+        for i in range(begin, numNodes):
             if i not in assignment:
                 new_assignment = assignment[:]
                 new_assignment.append(i)
@@ -120,7 +118,6 @@ class MyAgent(Agent):
         for i in x:
             for j in nodeNeighbors[i]:
                 nbrs.add(j)
-
         return len(nbrs)
 
     def display(self):
