@@ -91,5 +91,4 @@ class Network:
             d = self.degree(i)
             if (d > maxd):
                 maxd = d
-
         return maxd

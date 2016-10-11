@@ -42,7 +42,6 @@ class MyAgent(Agent):
         select a subset of nodes (up to budget) to seed
         nodes in the network are selected *** BY THEIR INDEX ***
         """
-
         numNodes = network.size()
 
         selected = []
@@ -64,23 +63,18 @@ class MyAgent(Agent):
         best = tuple(assignments)
         bestVal = 0
 
-        max_degree = 0
+        max_degree = network.maxDegree()
         ### your code goes here ###
         # [ NOTE: fill in where necessary ]
-
-        for i in range(numNodes):
-            if network.degree(i) > max_degree:
-                max_degree = network.degree(i)
-    
 
         frontier.pushfront(best)
         count = 0
         while not frontier.empty():
-            count += 1
-            print 'best: {}'.format(best)
-            print 'bestVal: {}'.format(bestVal)
-            # take the front element from the frontier
+            #count += 1
+           
+           # take the front element from the frontier
             assignment = frontier.pop()
+           
             # manage frontier and branch-and-bound search
             # prune nodes (and subtrees) as needed
             options = self.expand(assignment)
@@ -89,11 +83,17 @@ class MyAgent(Agent):
                 if cover > bestVal:
                     bestVal = cover
                     best = option
-                upper_bound = cover + (max_degree * 
-                                            (3 - self.num_assignments(option)))
+                upper_bound = cover + (max_degree * (3 - self.num_assignments(option)))
                 if upper_bound > bestVal:
-                    frontier.pushback(option)
-
+                    frontier.pushfront(option)
+            ''' 
+            if count == 2:
+                print '---------------------'
+                print 'num options ' + str(len(frontier.nodes))
+                print 'max ' + str(max_degree)
+                print 'bestval {}, k={}'.format(bestVal, self.num_assignments(best))
+                print '---------------------'
+            '''
         ### end your code ###
 
         for i in range(numNodes):
@@ -145,5 +145,3 @@ class MyAgent(Agent):
 
     def display(self):
         print "Agent ID ", self.id
-        i_child = (i_child[0], 1)
-
