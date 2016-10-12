@@ -1,10 +1,12 @@
+# Date: October 12. 2016
+# Partners: Adam Gross and Henry Bogardus
+# Honor Code: We affirm on our honor that we have neither given nor received unauthorized aid on this assignment.
 # You will implement this class
 # At the minimum, you need to implement the selectNodes function
 # If you override __init__ from the agent superclass, make sure that the interface remains identical as in agent;
 # otherwise your agent will fail
 
 from agent import Agent
-
 import ConfigParser
 import copy
 from collections import deque
