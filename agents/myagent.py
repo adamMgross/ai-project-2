@@ -5,6 +5,7 @@
 
 from agent import Agent
 
+import ConfigParser
 import copy
 from collections import deque
 from sets import Set
@@ -44,6 +45,10 @@ class MyAgent(Agent):
         """
         numNodes = network.size()
 
+        Config = ConfigParser.ConfigParser()
+        Config.read("params.conf")
+        BUDGET = int(Config._sections['AgentParameters']['budget'])
+        
         selected = []
 
         # store the set of neighbors for each node
@@ -59,10 +64,7 @@ class MyAgent(Agent):
         # initialize selected nodes
         best = []
         bestVal = 0
-
         max_degree = network.maxDegree()
-        ### your code goes here ###
-        # [ NOTE: fill in where necessary ]
 
         frontier.pushfront(best)
         while not frontier.empty():
@@ -78,12 +80,10 @@ class MyAgent(Agent):
                 if cover > bestVal:
                     bestVal = cover
                     best = option
-                upper_bound = cover + (max_degree * (3 - len(option)))
+                upper_bound = cover + (max_degree * (BUDGET - len(option)))
                 if upper_bound > bestVal:
                     frontier.pushfront(option)
 
-        ### end your code ###
-        
         return best
 
     def expand(self, assignment, numNodes):
@@ -93,18 +93,13 @@ class MyAgent(Agent):
         returns children of this node in the search tree
         """
 
-        #nodes = [sum(i, assignment) for i in range(numNodes) if i not in assignment]
-        
         nodes = [] 
-        ### your code goes here  ####
         begin = 0 if len(assignment) == 0 else max(assignment)
         for i in range(begin, numNodes):
             if i not in assignment:
                 new_assignment = assignment[:]
                 new_assignment.append(i)
                 nodes.append(new_assignment)
-        ### end your code  ###
-
         return nodes
 
     def eval(self, nodeNeighbors, x):
